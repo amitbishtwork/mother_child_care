@@ -10,6 +10,8 @@ import traceback
 
 def create_appointment(request):
     try:
+        patient_type = request.GET.get('type')
+
         patient_number = request.GET.get('a')
         patient_number = "+{}".format(patient_number)
         print(patient_number)
@@ -20,7 +22,9 @@ def create_appointment(request):
             return HttpResponse('not crated')
         doctor = auth_user.objects.get(email='doctor@doctor.com')
         schedule_date = datetime.now() + dt.timedelta(days=2)
-        aa = Appointment.objects.filter(appointment_of=patient, appointment_date__date=schedule_date.date())
+        aa = Appointment.objects.select_related('appointment_of').filter(appointment_of__user_type=patient_type, 
+                                                                         appointment_of=patient, 
+                                                                         appointment_date__date=schedule_date.date())
         if aa:
             return HttpResponse('appointment already created')
         ap = Appointment(appointment_of=patient, appointment_date=schedule_date, doctor_name=doctor)
