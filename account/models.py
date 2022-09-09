@@ -165,8 +165,8 @@ class Appointment(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return "{} app. with {}".format(self.appointment_of.first_name,
-                                        self.appointment_of.last_name)
+        return "{} appointment with {}".format(self.appointment_of.first_name,
+                                        self.doctor_name.first_name)
 
 
 vaccine_names = [
@@ -190,6 +190,7 @@ class Vaccine(models.Model):
 
 
 class VaccineStatus(models.Model):
+    vaccine_for = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     vaccine_name = models.ForeignKey(Vaccine, on_delete=models.CASCADE)
     dosage_count = models.IntegerField(default=1)
     status = models.CharField(max_length=15, 
@@ -198,5 +199,5 @@ class VaccineStatus(models.Model):
     applied_on = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.vaccine_name.vaccine_name
+        return "{} {}| {}".format(self.vaccine_for.first_name, self.vaccine_for.last_name, self.vaccine_name.vaccine_name)
 
