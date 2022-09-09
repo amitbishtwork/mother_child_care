@@ -131,3 +131,7 @@ REST_FRAMEWORK =  {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+
+ACESS_KEY = 'OiYYz7MyCC1ZNqogqWHPj9kZQqBjuKJRaXpKnhMK'
+AUTHORIZATION_KEY = '6fffb5f6-d27d-4c1f-a04f-3112cb7f3f70'
