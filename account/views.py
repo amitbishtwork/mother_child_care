@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import serializers
 from django.contrib.auth import login, logout, authenticate
-from rest_framework_jwt.utils import jwt_payload_handler
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -41,9 +41,8 @@ class LoginView(APIView):
 
         user = authenticate(username=email, password=password)
         if user:
-            payload = jwt_payload_handler(user)
-            token = jwt.encode(payload, settings.SECRET_KEY)
-            auth_token = token.decode('unicode_escape')
+            payload = RefreshToken.for_user(user)
+            auth_token = str(payload.access_token)
             print(auth_token)
             return Response({"email":user.email,"user_type":user.user_type,"id":user.id,"name":user.first_name,"email":user.email,"contact":user.contact,"token":auth_token})
         return Response({"error":"Invalid username/password"},status=400)
