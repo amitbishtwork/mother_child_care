@@ -97,11 +97,13 @@ class User(AbstractBaseUser, PermissionsMixin):
             'of deleting accounts.'
         ),
     )
-    
+
+    gender = models.CharField(max_length=1, choices=(('M', 'Male'), ('F', 'Female')))
     contact = models.CharField(max_length=15, blank=False, null=False)
-    country_code = models.CharField(max_length=14, default='+91')
+    # country_code = models.CharField(max_length=14, default='+91')
     birth_day = models.DateTimeField(default=datetime.now)
-    user_type = models.CharField(max_length=10, default='P')
+    user_type = models.CharField(choices=(('M', 'Mother'), ('C', 'Child'), 
+                                          ('A', 'Admin'), ('D', 'Doctor')), max_length=1, default='A')
     parent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -109,9 +111,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-    
+
     objects = UserManager()
-    
+
     @property
     def token(self):
         """
@@ -152,3 +154,49 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token.decode('utf-8')
+
+
+class Appointment(models.Model):
+    appointment_of = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, 
+                                       related_name='patient_appointment')
+    appointment_date = models.DateTimeField()
+    doctor_name = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, 
+                                    related_name='doctor_appointment')
+    description = models.TextField()
+
+    def __str__(self):
+        return "{} app. with {}".format(self.appointment_of.first_name,
+                                        self.appointment_of.last_name)
+
+
+vaccine_names = [
+    ('BCG', 'BCG'),
+    ('HIB', 'HIB'),
+    ('Hep-B', 'Hep-B'),
+    ('MMR', 'MMR'),
+    ('DPT', 'DPT'),
+    ('Polio', 'Polio'),
+]
+
+
+class Vaccine(models.Model):
+    vaccine_name = models.CharField(choices=vaccine_names, max_length=512)
+    total_doses = models.IntegerField(default=1)
+    age_given = models.CharField(max_length=100)  ## example 3,6,7
+    description = models.TextField()
+
+    def __str__(self):
+        return self.vaccine_name
+
+
+class VaccineStatus(models.Model):
+    vaccine_name = models.ForeignKey(Vaccine, on_delete=models.CASCADE)
+    dosage_count = models.IntegerField(default=1)
+    status = models.CharField(max_length=15, 
+                              choices=(('Pending', 'Pending'), ('Completed', 'Completed')), default='Pending')
+    due_date = models.DateTimeField()
+    applied_on = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.vaccine_name.vaccine_name
+
