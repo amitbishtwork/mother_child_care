@@ -53,8 +53,8 @@ class AppointmentView(APIView):
         ap_type = myuser.user_type
         print(myuser)
         values_list = ('appointment_date', 'appointment_of__email', 'appointment_of__first_name',
-                    'appointment_of__last_name', 'appointment_of__contact', 'doctor_name__email', 'doctor_name__first_name',
-                    'doctor_name__last_name')
+                       'appointment_of__last_name', 'appointment_of__contact', 'appointment_of__user_type',
+                       'doctor_name__email', 'doctor_name__first_name', 'doctor_name__last_name')
 
         if myuser.is_staff:
             print('get starff full')
