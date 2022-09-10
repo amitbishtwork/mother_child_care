@@ -48,31 +48,24 @@ class AppointmentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, *a, **kw):
-        ap_type = self.request.GET('type')
+        ap_type = self.request.GET.get('type', 'patient')
         myuser = self.request.user
-        
-        User = get_user_model()
-        
+        ap_type = myuser.user_type
+        print(myuser)
         values_list = ('appointment_date', 'appointment_of__email', 'appointment_of__first_name',
-                    'appointment__last_name', 'appointment_of__contact', 'doctor_name__email', 'doctor_name__first_name',
+                    'appointment_of__last_name', 'appointment_of__contact', 'doctor_name__email', 'doctor_name__first_name',
                     'doctor_name__last_name')
-        
-        if myuser.is_staff and ap_type:
-            if ap_type == 'doctor':
-                appointment = Appointment.objects.select_related('appointment_of', 'doctor_name'
-                                                                 ).filter(doctor_name=myuser).values(*values_list)
-            elif ap_type == 'patient':
-                appointment = Appointment.objects.select_related('appointment_of', 'doctor_name').filter(
-                    appointment_of=myuser
-                ).values(*values_list)
-        elif myuser.is_staff:
-            appointment = Appointment.objects.select_related('appointment_of', 'doctor_name').values(*values_list)
+
+        if myuser.is_staff:
+            print('get starff full')
+            appointment = Appointment.objects.select_related('appointment_of', 'doctor_name').all().values(
+                *values_list).all()
         else:
-            user_type = 'doctor' if myuser.user_type == 'D' else 'patient'
-            if user_type == 'doctor':
+            print(ap_type)
+            if ap_type == 'D':
                 appointment = Appointment.objects.select_related('appointment_of', 'doctor_name'
                                                                  ).filter(doctor_name=myuser).values(*values_list)
-            elif user_type == 'patient':
+            elif ap_type in ('M', 'C'):
                 appointment = Appointment.objects.select_related('appointment_of', 'doctor_name').filter(
                     appointment_of=myuser
                 ).values(*values_list)
