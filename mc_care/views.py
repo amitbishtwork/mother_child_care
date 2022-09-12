@@ -21,7 +21,7 @@ def create_appointment(request):
         if not patient:
             return JsonResponse({'message': 'not created'}, status=400)
         doctor = auth_user.objects.get(email='doctor@doctor.com')
-        schedule_date = datetime.now() + dt.timedelta(days=2)
+        schedule_date = datetime.now()
         aa = Appointment.objects.select_related('appointment_of').filter(appointment_of=patient, 
                                                                          appointment_date__date=schedule_date.date()
                                                                          )

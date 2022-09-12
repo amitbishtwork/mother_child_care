@@ -31,6 +31,7 @@ CSRF_TRUSTED_ORIGINS=['https://*.ngrok.io']
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -139,3 +141,6 @@ SIMPLE_JWT = {
 
 ACESS_KEY = 'OiYYz7MyCC1ZNqogqWHPj9kZQqBjuKJRaXpKnhMK'
 AUTHORIZATION_KEY = '6fffb5f6-d27d-4c1f-a04f-3112cb7f3f70'
+
+CORS_ORIGIN_ALLOW_ALL = True
+

@@ -14,7 +14,7 @@ class Command(BaseCommand):
 		contact_number = []
 		for order in coming_vacinations:
 			ivr_id = ivr_mapping["C"]
-			start_time = str(datetime.now() + timedelta(minutes=5))
+			start_time = str(datetime.now() + timedelta(minutes=2))
 			end_time = str(datetime.now() + timedelta(minutes=25))
 			contact_number.append(str(order.vaccine_for.contact)) 
 
